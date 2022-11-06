@@ -3,23 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Colour;
-use function GuzzleHttp\Promise\all;
+use App\Models\{Car, Brand, Colour};
 
-class ColoursController extends Controller
+class CarsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $result = '';
-        $colours = Colour::all();
+        $cars = Car::all();
 
-        foreach ($colours as $colour) {
-            $result .= "<p>" . $colour->name . "</p>";
+        foreach ($cars as $car) {
+            $result .= "<p>" . $car->price . "</p>";
+            $result .= "<p>" . $car->description . "</p>";
+            $result .= "<p>" . $car->brand->name . "</p>";
+            $result .= "<p>" . $car->colour->name . "</p>";
         }
 
         return response($result);
@@ -27,11 +29,16 @@ class ColoursController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
      */
     public function create()
     {
-        return view('admin.colour-create');
+        $colours = Colour::all()->pluck('name', 'id')->toArray();
+        $brands = Brand::all()->pluck('name', 'id')->toArray();
+
+        return view('admin.car-create')->with([
+            'colours' => $colours,
+            'brands' => $brands
+        ]);
     }
 
     /**
@@ -41,29 +48,31 @@ class ColoursController extends Controller
      */
     public function store(Request $request)
     {
-        Colour::create($request->all());
+        Car::create($request->all());
 
-        return redirect()->back()->with('success', 'Цвет создан успешно');
+        return redirect()->back()->with('success', 'Автомобиль добавлен');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return response(json_encode(DB::table('colours')->find($id)));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-
+        //
     }
 
     /**
@@ -71,32 +80,21 @@ class ColoursController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         //
     }
 
-    public function deleteForm(Request $request)
-    {
-        $heading = 'Странца удаления цвета';
-        $id = $request->query('id');
-
-        return view('delete-colour', [
-            'heading' => $heading,
-            'id' => $id
-        ]);
-    }
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        DB::table('colours')->delete($id);
-
-        return response('Deleted successfully');
+        //
     }
 }

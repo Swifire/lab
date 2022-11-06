@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class BrandsController extends Controller {
     public function index() {
-        //return DB::table('brands')->get();
-        //return json_encode(DB::table('brands')->where('name', 'BMW')->first());
-        //return json_encode(DB::table('brands',)->find(2));
-        //return DB::table('brands',)->pluck('name');
-        //return DB::table('brands',)->pluck('name', 'id');
-        return DB::table('brands',)->count();
+        $result = '';
+        $brands = Brand::all();
+
+        foreach ($brands as $brands) {
+            $result .= "<p>" . $brands->name . "</p>";
+        }
+
+        return response($result);
     }
 
     public function show($id): string {
@@ -21,20 +24,21 @@ class BrandsController extends Controller {
     }
 
     public function create(Request $request): string {
-        $name = $request->query('name');
-
-        // Подготовленные запросы, чтобы избежать инъекций в БД
-        DB::insert('insert into brands (name) values (?)', [$name]);
-
-        return 'create';
+        return view('admin.brand-create');
     }
 
     public function pagination() {
         return DB::table('brands')->simplePaginate(1);
     }
 
-    public function store() {
-        return 'Post - создание бренда';
+    public function store(Request $request) {
+        $request->validate([
+            'name' => 'min:2'
+        ]);
+
+        Brand::create($request->all());
+
+        return redirect()->back()->with('success', 'Бренд создан успешно');
     }
 
     public function destroy() {

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('image', 512)->nullable();
             $table->unsignedBigInteger('brand_id');
-            $table->unsignedBigInteger('color_id');
+            $table->unsignedBigInteger('colour_id');
             $table->timestamps();
         });
     }
