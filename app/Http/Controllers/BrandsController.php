@@ -9,14 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class BrandsController extends Controller {
     public function index() {
-        $result = '';
-        $brands = Brand::all();
+        $brands = Brand::paginate(2);
 
-        foreach ($brands as $brands) {
-            $result .= "<p>" . $brands->name . "</p>";
-        }
-
-        return response($result);
+        return view('admin.brands')->with(['brands' => $brands]);
     }
 
     public function show($id): string {

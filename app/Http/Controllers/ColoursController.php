@@ -15,14 +15,9 @@ class ColoursController extends Controller
      */
     public function index()
     {
-        $result = '';
-        $colours = Colour::all();
+        $colours = Colour::paginate(2);
 
-        foreach ($colours as $colour) {
-            $result .= "<p>" . $colour->name . "</p>";
-        }
-
-        return response($result);
+        return view('admin.colours')->with(['colours' => $colours]);
     }
 
     /**

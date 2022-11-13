@@ -10,4 +10,9 @@ class Colour extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'code'];
+
+    public function getNameAttribute($name)
+    {
+        return ucfirst($name);
+    }
 }

@@ -10,21 +10,12 @@ class CarsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $result = '';
-        $cars = Car::all();
+        $cars = Car::paginate(2);
 
-        foreach ($cars as $car) {
-            $result .= "<p>" . $car->price . "</p>";
-            $result .= "<p>" . $car->description . "</p>";
-            $result .= "<p>" . $car->brand->name . "</p>";
-            $result .= "<p>" . $car->colour->name . "</p>";
-        }
-
-        return response($result);
+        return view('admin.cars')->with(['cars' => $cars]);
     }
 
     /**
